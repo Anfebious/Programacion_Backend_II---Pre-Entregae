@@ -1,24 +1,30 @@
-import mongoose, { Schema } from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
+import { Schema, model } from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
-const cartCollection = "carts";
-const cartsSchema = new mongoose.Schema({
-    id: String,
-    products: [{
-        productId: {
-            type: Schema.Types.ObjectId,
-            ref: "products"
+const cartSchema = new Schema({
+    products: [
+        {
+            product: {
+                type: Schema.Types.ObjectId,
+                ref: "products",
+                required: [ true, "El producto es obligatorio" ],
+            },
+            quantity: {
+                type: Number,
+                required: [ true, "La cantidad es obligatoria" ],
+                min: [ 1, "La cantidad debe ser mayor que 0" ],
+            },
+            _id: false,
         },
-        quantity: {
-            type: Number,
-            default: 1,
-        }
-    }],
-
+    ],
+}, {
+    timestamps: true, // Añade timestamps para generar createdAt y updatedAt
+    versionKey: false, // Elimina el campo __v de versión
 });
 
-cartsSchema.plugin(mongoosePaginate)
+// Agrega mongoose-paginate-v2 para habilitar las funcionalidades de paginación.
+cartSchema.plugin(paginate);
 
-export const cartModel = mongoose.model(cartCollection, cartsSchema)
+const Cart = model("carts", cartSchema);
 
-
+export default Cart;
