@@ -1,0 +1,11 @@
+<div id="container">
+    <ul>
+        {{#each products}}
+        <li>{{#each this}}<strong>{{@key}}:</strong> {{this}}<br>{{/each}}</li>
+        {{/each}}
+    </ul>
+</div>
+<button id="prev" onclick="getPrevPage()">Prev page</button>
+<button id="next" onclick="getNextPage()">Next page</button>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTime.js"></script>
