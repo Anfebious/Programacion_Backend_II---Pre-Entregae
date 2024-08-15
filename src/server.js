@@ -1,22 +1,29 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import paths from "./utils/paths.js";
 
 import { config as dotenvConfig } from "dotenv";
 import { connectDB } from "./config/mongoose.config.js";
 import { config as configHandlebars } from "./config/handlebars.config.js";
 import { config as configSocket } from "./config/socket.config.js";
+import initializePassport from "./config/passport.config.js";
+import passport from "passport";
 
 import apiCartRouter from "./routes/api/cart.routes.js";
 import apiProductRouter from "./routes/api/product.routes.js";
 import cartRouter from "./routes/carts.routes.js";
 import homeRouter from "./routes/home.routes.js";
 import productRouter from "./routes/products.routes.js";
+import sessionRouter from "./routes/api/session.routes.js";
 
 const server = express();
 
 // Decodificadores del BODY
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
+server.use(cookieParser());
+initializePassport();
+server.use(passport.initialize());
 
 // Declaración de ruta estática
 server.use("/public", express.static(paths.public));
@@ -33,6 +40,7 @@ connectDB();
 // Enrutadores
 server.use("/api/carts", apiCartRouter);
 server.use("/api/products", apiProductRouter);
+server.use("/api/sessions", sessionRouter);
 server.use("/carts", cartRouter);
 server.use("/", homeRouter);
 server.use("/products", productRouter);
