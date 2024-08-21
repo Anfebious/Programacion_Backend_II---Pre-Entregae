@@ -28,7 +28,9 @@ router.post('/login', async (req, res, next) => {
 
         res.cookie('jwt', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-        res.json({ user });
+        // res.json({ user });
+        // res.redirect('/login?message=Login successful');
+        res.render("login", { message: "login successful" });
     } catch (error) {
         next(error);
     }

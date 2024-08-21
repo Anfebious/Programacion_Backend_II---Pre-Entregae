@@ -1,3 +1,4 @@
+import passportCall from "../utils/passportCall.js"
 import { Router } from "express";
 import ProductManager from "../managers/product.manager.js";
 
@@ -8,6 +9,23 @@ import {
 const router = Router();
 const productManager = new ProductManager();
 const currentCartId = "66afb410c37231583bdbf367"; // Aquí coloca el ID del carrito creado en tu BD
+
+router.get('/login', (req, res) => {
+    const message = req.query.message || '';
+    res.render('login', { message });
+})
+
+router.get("/current", passportCall("current"), (req, res) => {
+    if (req.user) {
+        const user = {
+            _id: req.user._id,
+            email: req.user.email,
+        };
+        res.render("current", { user: user });
+    } else {
+        res.render("current", { user: null });
+    }
+});
 
 // Ruta para obtener todos los productos con opciones de consulta y mostrar la vista principal
 router.get("/", async (req, res) => {
